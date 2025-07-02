@@ -11,10 +11,23 @@ class PatreonParser extends Parser{
         if (this.isCollectionList()) {
             return this.getCollectionLinks(dom);
         }
-        let cards = [...dom.querySelectorAll("div[data-tag='post-card']")]
+        let cards = [...dom.querySelectorAll("div[data-tag='post-card']")];
+        // Regex to identify and exclude separator posts with titles like "v 56"
+        const separatorRegex = /^v\s*\d+$/i;
+
         return cards
             .filter(c => this.hasAccessableContent(c))
-            .map(s => this.cardToChapter(s)).reverse();
+            .filter(card => {
+                const titleElement = card.querySelector("span[data-tag='post-title']");
+                if (!titleElement) {
+                    return false; // Not a chapter if there is no title element.
+                }
+                const title = titleElement.textContent.trim();
+                // Exclude the card if its title matches the separator pattern.
+                return !separatorRegex.test(title);
+            })
+            .map(s => this.cardToChapter(s))
+            .reverse();
     }
 
     getCollectionLinks(dom) {
