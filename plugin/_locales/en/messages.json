@@ -47,6 +47,10 @@
 		"message": "Update all",
 		"description": "Label on button to Update all Epubs"
 	},
+    "button_Lib_Template_Update_Selected": {
+        "message": "Update selected",
+        "description": "Text for button to update selected epubs in library"
+    },
 	"__MSG_button_Lib_Template_Delete_EPUB__": {
 		"message": "Delete EPUB",
 		"description": "Label on button to Delete EPUB"
@@ -387,6 +391,10 @@
 		"message": "Override Delay per chapter Value (where applicable)",
 		"description": "Override Delay per chapter Value (where applicable)"
 	},
+    "__MSG_label_Parse_After_Delay__": {
+        "message": "Parse After Delay (in seconds)",
+        "description": "Label on checkbox"
+    },
 	"__MSG_label_Overwrite_Epub_When_Filename_Duplicte__": {
 		"message": "Overwrite existing EPUB file with same name",
 		"description": "Label for checkbox to toggle between 'overwrite exisitng Epub files' and 'make names unique'"

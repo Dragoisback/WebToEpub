@@ -371,6 +371,7 @@ class Library {
         }
         LibRenderString += "<div style='display:flex; justify-content: center;'>";
         LibRenderString += "<button id='libupdateall'>"+document.getElementById("LibTemplateUpdateAll").innerHTML+"</button>";
+        LibRenderString += "<button id='libupdateselected'>"+document.getElementById("LibTemplateUpdateSelected").innerHTML+"</button>";
         LibRenderString += "</div>";
         if ( ShowCompactView && !ShowAdvancedOptions) {
             LibRenderString += "<table>";
@@ -389,6 +390,7 @@ class Library {
                 LibRenderString += "<tr>";
                 for (let j = i; j < CurrentLibKeys.length && j < column + i; j++) {
                     LibRenderString += "<td>";
+                    LibRenderString += "<input type='checkbox' class='lib-update-checkbox' data-libepubid='"+CurrentLibKeys[j]+"'>";
                     LibRenderString += "<img data-libepubid="+CurrentLibKeys[j]+" style='cursor: pointer; max-height: "+(772/column)+"px; max-width: "+(603/column)+"px;' class='LibCoverCompact' id='LibCover"+CurrentLibKeys[j]+"'>";
                     LibRenderString += "</td>";
                 }
@@ -399,6 +401,7 @@ class Library {
             LibRenderString += "</div>";
             Library.AppendHtmlInDiv(LibRenderString, LibRenderResult, "LibDivRenderWraper");
             document.getElementById("libupdateall").addEventListener("click", function(){Library.Libupdateall()});
+            document.getElementById("libupdateselected").addEventListener("click", function(){Library.LibUpdateSelected()});
             for (let i = 0; i < CurrentLibKeys.length; i++) {
                 document.getElementById("LibCover"+CurrentLibKeys[i]).addEventListener("click", function(){Library.LibDownload(this)});
             }
@@ -414,7 +417,7 @@ class Library {
                 LibRenderString += "<table>";
                 LibRenderString += "<tbody>";
                 LibRenderString += "<tr>";
-                LibRenderString += "<td style='height: 115.5px; width: 106.5px;' rowspan='4'>   <img class='LibCover' id='LibCover"+CurrentLibKeys[i]+"'></td>";
+                LibRenderString += "<td style='height: 115.5px; width: 106.5px;' rowspan='4'> <input type='checkbox' class='lib-update-checkbox' data-libepubid='"+CurrentLibKeys[i]+"'><img class='LibCover' id='LibCover"+CurrentLibKeys[i]+"'></td>";
                 LibRenderString += "<td colspan='2'>";
                 if (ShowAdvancedOptions) {
                     LibRenderString += "<button data-libepubid="+CurrentLibKeys[i]+" id='LibChangeOrderUp"+CurrentLibKeys[i]+"'>↑</button>";
@@ -457,6 +460,10 @@ class Library {
                 LibRenderString += "<td>"+LibTemplateFilename+"</td>";
                 LibRenderString += "<td><input id='LibFilename"+CurrentLibKeys[i]+"' type='text' value=''></td>";
                 LibRenderString += "</tr>";
+                LibRenderString += "<tr>";
+                LibRenderString += "<td>Last Updated:</td>";
+                LibRenderString += "<td><span id='LibLastUpdated"+CurrentLibKeys[i]+"'></span></td>";
+                LibRenderString += "</tr>";
                 LibRenderString += "</tbody>";
                 LibRenderString += "</table>";
                 if (ShowAdvancedOptions) {
@@ -466,6 +473,7 @@ class Library {
             LibRenderString += "</div>";
             Library.AppendHtmlInDiv(LibRenderString, LibRenderResult, "LibDivRenderWraper");
             document.getElementById("libupdateall").addEventListener("click", function(){Library.Libupdateall()});
+            document.getElementById("libupdateselected").addEventListener("click", function(){Library.LibUpdateSelected()});
             if (ShowAdvancedOptions) {
                 document.getElementById("libdeleteall").addEventListener("click", function(){Library.Libdeleteall()});
                 document.getElementById("libexportall").addEventListener("click", function(){Library.Libexportall()});
@@ -503,6 +511,7 @@ class Library {
                 Library.AppendHtmlInDiv(newChapterHTML, document.getElementById("LibNewChapterCount"+CurrentLibKeys[i]), "newChapterWraper");
                 document.getElementById("LibStoryURL"+CurrentLibKeys[i]).value = await Library.LibGetFromStorage("LibStoryURL"+CurrentLibKeys[i]);
                 document.getElementById("LibFilename"+CurrentLibKeys[i]).value = await Library.LibGetFromStorage("LibFilename"+CurrentLibKeys[i]);
+                document.getElementById("LibLastUpdated"+CurrentLibKeys[i]).textContent = await Library.LibGetFromStorage("LibLastUpdated"+CurrentLibKeys[i]) || "Never";
             }
             if (ShowAdvancedOptions) {
                 if (!util.isFirefox()) {
@@ -731,7 +740,8 @@ class Library {
             ["LibEpub" + LibFileReader.LibStorageValueId]: result,
             ["LibStoryURL" + LibFileReader.LibStorageValueId]: LibFileReader.LibStorageValueURL,
             ["LibFilename" + LibFileReader.LibStorageValueId]: LibFileReader.LibStorageValueFilename,
-            ["LibNewChapterCount" + LibFileReader.LibStorageValueId]: NewChapterCount
+            ["LibNewChapterCount" + LibFileReader.LibStorageValueId]: NewChapterCount,
+            ["LibLastUpdated" + LibFileReader.LibStorageValueId]: new Date().toLocaleString()
         }, async function() {
             await Library.LibSaveCoverImgInStorage(LibFileReader.LibStorageValueId);
             await Library.LibCreateStorageIDs(parseInt(LibFileReader.LibStorageValueId));
@@ -870,6 +880,34 @@ class Library {
             document.getElementById("LibDownloadEpubAfterUpdateCheckbox").click();
         }
         let LibArray = await Library.LibGetFromStorage("LibArray");
+        ErrorLog.SuppressErrorLog =  true;
+        for (let i = 0; i < LibArray.length; i++) {
+            Library.LibClearFields();
+            let obj = {};
+            obj.dataset = {};
+            obj.dataset.libclick = "yes";
+            obj.dataset.libsuppressErrorLog = true;
+            document.getElementById("startingUrlInput").value = await Library.LibGetFromStorage("LibStoryURL" + LibArray[i]);
+            await main.onLoadAndAnalyseButtonClick.call(obj);
+            try {
+                await main.fetchContentAndPackEpub.call(obj);
+            } catch {
+                //
+            }
+        }
+        Library.LibClearFields();
+        ErrorLog.SuppressErrorLog =  false;
+    }
+
+    static async LibUpdateSelected(){
+        if (document.getElementById("LibDownloadEpubAfterUpdateCheckbox").checked == true) {
+            document.getElementById("LibDownloadEpubAfterUpdateCheckbox").click();
+        }
+        let checkboxes = document.querySelectorAll('.lib-update-checkbox:checked');
+        let LibArray = [];
+        for (let checkbox of checkboxes) {
+            LibArray.push(checkbox.dataset.libepubid);
+        }
         ErrorLog.SuppressErrorLog =  true;
         for (let i = 0; i < LibArray.length; i++) {
             Library.LibClearFields();

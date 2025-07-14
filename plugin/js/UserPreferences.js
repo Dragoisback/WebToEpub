@@ -117,6 +117,8 @@ class UserPreferences {
         this.addPreference("LibShowAdvancedOptions", "LibShowAdvancedOptionsCheckbox", false);
         this.addPreference("LibShowCompactView", "LibShowCompactViewCheckbox", false);
         this.addPreference("LibDownloadEpubAfterUpdate", "LibDownloadEpubAfterUpdateCheckbox", false);
+        this.addPreference("parseAfterDelay", "parseAfterDelayCheckbox", false);
+        this.addPreference("parseAfterDelayValue", "parseAfterDelayValue", "10");
         this.observers = [];
         this.readingList = new ReadingList();
 

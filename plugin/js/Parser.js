@@ -614,6 +614,10 @@ class Parser {
 
     // Hook if need to chase hyperlinks in page to get all chapter content
     async fetchChapter(url) {
+        if (this.userPreferences.parseAfterDelay.value) {
+            let delay = parseInt(this.userPreferences.parseAfterDelayValue.value) * 1000;
+            await util.sleep(delay);
+        }
         return (await HttpClient.wrapFetch(url)).responseXML;
     }
 
