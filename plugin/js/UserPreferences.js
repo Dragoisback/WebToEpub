@@ -87,6 +87,7 @@ class UserPreferences {
         this.addPreference("styleSheet", "stylesheetInput", EpubMetaInfo.getDefaultStyleSheet());
         this.addPreference("CustomFilename", "CustomFilenameInput", "%Filename%");
         this.addPreference("useSvgForImages", "useSvgForImagesInput", true);
+        this.addPreference("removeNextAndPreviousChapterHyperlinks", "removeNextAndPreviousChapterHyperlinksInput", true);
         this.addPreference("advancedOptionsVisibleByDefault", "advancedOptionsVisibleByDefaultCheckbox", false);
         this.addPreference("noDownloadPopup", "noDownloadPopupCheckbox", false);
         this.addPreference("writeErrorHistoryToFile", "writeErrorHistoryToFileCheckbox", false);
@@ -103,6 +104,8 @@ class UserPreferences {
         this.addPreference("manualDelayPerChapter", "manualDelayPerChapterTag", "0");
         this.addPreference("overrideMinimumDelay", "overrideMinimumDelayCheckbox", false);
         this.addPreference("skipImages", "skipImagesCheckbox", false);
+        this.addPreference("compressImages", "compressImagesCheckbox", false);
+        this.addPreference("compressImagesMaxResolution", "compressImagesMaxResolutionTag", "1080");
         this.addPreference("overwriteExistingEpub", "overwriteEpubWhenDuplicateFilenameCheckbox", false);
         this.addPreference("themeColor", "themeColorTag", "");
         this.addPreference("useFullTitle", "useFullTitleAsFileNameCheckbox", false);
