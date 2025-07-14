@@ -31,8 +31,5 @@
       "strict_min_version": "115.0"
     }
   },
-  "minimum_chrome_version": "120",
-  "content_security_policy": {
-    "extension_pages": "script-src 'self' 'wasm-unsafe-eval' https://fenrirealm.com/_app/immutable/chunks/each.MTss_pun.js;"
-  }
+  "minimum_chrome_version": "120"
 }
