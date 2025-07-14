@@ -47,10 +47,10 @@
 		"message": "Update all",
 		"description": "Label on button to Update all Epubs"
 	},
-        "__MSG_button_Lib_Template_Update_Selected__": {
+    "button_Lib_Template_Update_Selected": {
         "message": "Update selected",
         "description": "Text for button to update selected epubs in library"
-        },
+    },
 	"__MSG_button_Lib_Template_Delete_EPUB__": {
 		"message": "Delete EPUB",
 		"description": "Label on button to Delete EPUB"
